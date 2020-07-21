@@ -9,17 +9,13 @@ import './DirectoryView.css'
 class DirectoryItem extends React.PureComponent {
   constructor(props){
     super(props);
-    this.updated = false;
   }
 
   render() {
 
     const childDirs = this.props.dirNode.dirs || [];
     const onLabelClick = () => {
-      if (!this.updated) {
-        this.props.updateDir(this.props.indexPath);
-        this.updated = true;
-      }
+      this.props.updateDir(this.props.indexPath);
       this.props.setCurDir(this.props.indexPath);
     };
     return (

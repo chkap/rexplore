@@ -18,6 +18,7 @@ class RemoteExplorer extends React.Component {
 
     this.updateDir = this.updateDir.bind(this);
     this.setCurDir = this.setCurDir.bind(this);
+    this.updatedFlagCache = {};
   }
 
   getNodePathFromIndexPath(indexPath){
@@ -33,7 +34,7 @@ class RemoteExplorer extends React.Component {
   updateDirWithIndex(indexPath, dirs, files) {
     let curNode = this.state.rootNode;
     for(const index of indexPath) {
-      curNode.dirs[index] = Object.assign({}, curNode.dirs[index]);
+      // curNode.dirs[index] = Object.assign({}, curNode.dirs[index]);
       curNode = curNode.dirs[index];
     }
     this.mergeDirNodeInfo(curNode, dirs, files);
@@ -59,6 +60,9 @@ class RemoteExplorer extends React.Component {
 
   updateDir(indexPath) {
     const nodePath = this.getNodePathFromIndexPath(indexPath);
+    if(this.updatedFlagCache[nodePath] === true) {
+      return;
+    }
     const url = '/api/dir?' + new URLSearchParams({path:nodePath}).toString();
     console.log(`update dir with :${url}`);
     fetch(url)
@@ -74,6 +78,7 @@ class RemoteExplorer extends React.Component {
       const [dirs, files] = data;
       this.updateDirWithIndex(indexPath, dirs, files)
       this.setState({rootNode: Object.assign({}, this.state.rootNode)});
+      this.updatedFlagCache[nodePath] = true;
     })
     .catch( err => {console.error(err)})
   }
