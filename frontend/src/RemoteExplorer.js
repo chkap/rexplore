@@ -34,7 +34,7 @@ class RemoteExplorer extends React.Component {
   updateDirWithIndex(indexPath, dirs, files) {
     let curNode = this.state.rootNode;
     for(const index of indexPath) {
-      // curNode.dirs[index] = Object.assign({}, curNode.dirs[index]);
+      curNode.dirs[index] = Object.assign({}, curNode.dirs[index]);
       curNode = curNode.dirs[index];
     }
     this.mergeDirNodeInfo(curNode, dirs, files);
