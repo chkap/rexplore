@@ -23,7 +23,7 @@ function App() {
         </ToolBar>
       </AppBar>
       </Box>
-      <Box flexGrow={1}>
+      <Box flexGrow={1} className="App-container">
         <RemoteExplorer root='/'></RemoteExplorer>
       </Box>
       

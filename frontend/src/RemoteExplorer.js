@@ -1,10 +1,9 @@
 import React from 'react'
 import SplitPane from 'react-split-pane'
 import path from 'path'
-
+import DirectoryTreeView from './DirectoryTreeView'
+import DirectoryContentView from './DirectoryContentView'
 import './SplitPaneResizer.css'
-import './DirectoryView.css'
-import DirectoryView from './DirectoryView'
 
 
 class RemoteExplorer extends React.Component {
@@ -14,6 +13,7 @@ class RemoteExplorer extends React.Component {
       rootNode: {
         name: '/'
       },
+      selectedNode: null
     };
 
     this.updateDir = this.updateDir.bind(this);
@@ -29,6 +29,14 @@ class RemoteExplorer extends React.Component {
       names.push(curNode.name);
     }
     return path.join(...names);
+  }
+
+  getNodeFromIndexPath(indexPath) {
+    let curNode = this.state.rootNode;
+    for(const index of indexPath) {
+      curNode = curNode.dirs[index];
+    }
+    return curNode;
   }
 
   updateDirWithIndex(indexPath, dirs, files) {
@@ -77,27 +85,31 @@ class RemoteExplorer extends React.Component {
     .then(data => {
       const [dirs, files] = data;
       this.updateDirWithIndex(indexPath, dirs, files)
-      this.setState({rootNode: Object.assign({}, this.state.rootNode)});
+      const selected = this.getNodeFromIndexPath(indexPath);
+      this.setState({
+        rootNode: Object.assign({}, this.state.rootNode),
+        selectedNode: selected
+      });
       this.updatedFlagCache[nodePath] = true;
     })
     .catch( err => {console.error(err)})
   }
 
   setCurDir(curPath) {
-    this.setState({curPath});
+    const selected = this.getNodeFromIndexPath(curPath);
+    console.log('selected' + selected);
+    this.setState({selectedNode: selected});
   }
 
   render() {
     return (
-      <SplitPane split="vertical" minSiz={100} maxSize={500}>
-        <div style={{overflow: 'auto', height: '100%', width: '100%'}}>
-        <DirectoryView rootNode={this.state.rootNode}
-          updateDir={this.updateDir} setCurDir={this.setCurDir}></DirectoryView>
-        </div>
-      <div>{this.state.curPath}</div>
+      <SplitPane split="vertical" defaultSize={200} minSize={100} maxSize={500}>
+        <DirectoryTreeView rootNode={this.state.rootNode}
+          updateDir={this.updateDir} setCurDir={this.setCurDir}></DirectoryTreeView>
+        <DirectoryContentView dirNode={this.state.selectedNode}></DirectoryContentView>
       </SplitPane>
     );
-  }
+  } 
 }
 
 export default RemoteExplorer;

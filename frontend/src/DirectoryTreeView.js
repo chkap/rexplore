@@ -6,7 +6,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import path from 'path'
 import './DirectoryView.css'
 
-class DirectoryItem extends React.Component {
+class DirectoryTreeItem extends React.Component {
   constructor(props){
     super(props);
   }
@@ -28,22 +28,22 @@ class DirectoryItem extends React.Component {
     const childDirs = this.props.dirNode.dirs || [];
     const onLabelClick = () => {
       this.props.updateDir(this.props.indexPath);
-      this.props.setCurDir(this.props.indexPath);
+      // this.props.setCurDir(this.props.indexPath);
     };
     console.log(`re-render: ${this.props.indexPath}`)
     return (
       <TreeItem nodeId={this.props.indexPath.join()} label={this.props.dirNode.name} onLabelClick={onLabelClick}>
         {childDirs.map((child, index) => {
-          return <DirectoryItem key={child.name} dirNode={child} indexPath={this.props.indexPath.concat([index])}
+          return <DirectoryTreeItem key={child.name} dirNode={child} indexPath={this.props.indexPath.concat([index])}
               updateDir={this.props.updateDir} setCurDir={this.props.setCurDir}
-            ></DirectoryItem>
+            ></DirectoryTreeItem>
         })}
       </TreeItem>
     )
   }
 }
 
-class DirectoryView extends React.PureComponent {
+class DirectoryTreeView extends React.PureComponent {
   constructor(props) {
     super(props);
   }
@@ -54,11 +54,11 @@ class DirectoryView extends React.PureComponent {
       <TreeView
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}>
-        <DirectoryItem dirNode={rootNode} indexPath={[]}
-            updateDir={this.props.updateDir} setCurDir={this.props.setCurDir}></DirectoryItem>
+        <DirectoryTreeItem dirNode={rootNode} indexPath={[]}
+            updateDir={this.props.updateDir} setCurDir={this.props.setCurDir}></DirectoryTreeItem>
       </TreeView>
     );
   }
 }
 
-export default DirectoryView;
+export default DirectoryTreeView;
