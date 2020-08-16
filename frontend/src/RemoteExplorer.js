@@ -3,6 +3,8 @@ import SplitPane from 'react-split-pane'
 import path from 'path'
 import DirectoryTreeView from './DirectoryTreeView'
 import DirectoryContentView from './DirectoryContentView'
+import ExplorerContext from './context'
+
 import './SplitPaneResizer.css'
 
 
@@ -13,7 +15,7 @@ class RemoteExplorer extends React.Component {
       rootNode: {
         name: '/'
       },
-      selectedNode: null
+      curDir: null,
     };
 
     this.updateDir = this.updateDir.bind(this);
@@ -85,10 +87,8 @@ class RemoteExplorer extends React.Component {
     .then(data => {
       const [dirs, files] = data;
       this.updateDirWithIndex(indexPath, dirs, files)
-      const selected = this.getNodeFromIndexPath(indexPath);
       this.setState({
         rootNode: Object.assign({}, this.state.rootNode),
-        selectedNode: selected
       });
       this.updatedFlagCache[nodePath] = true;
     })
@@ -97,19 +97,28 @@ class RemoteExplorer extends React.Component {
 
   setCurDir(curPath) {
     const selected = this.getNodeFromIndexPath(curPath);
-    console.log('selected' + selected);
-    this.setState({selectedNode: selected});
+    console.log('curPath:' + curPath);
+    this.setState({curDir: curPath});
   }
 
   render() {
+    const contextAPI = {
+      updateDir: this.updateDir,
+      setCurDir: this.setCurDir,
+    };
+
+    const curNode = this.state.curDir ? this.getNodeFromIndexPath(this.state.curDir) : null;
+
     return (
-      <SplitPane split="vertical" defaultSize={200} minSize={100} maxSize={500}>
-        <DirectoryTreeView rootNode={this.state.rootNode}
-          updateDir={this.updateDir} setCurDir={this.setCurDir}></DirectoryTreeView>
-        <DirectoryContentView dirNode={this.state.selectedNode}></DirectoryContentView>
-      </SplitPane>
+      <ExplorerContext.Provider value={contextAPI}>
+        <SplitPane split="vertical" defaultSize={200} minSize={100} maxSize={500}>
+          <DirectoryTreeView rootNode={this.state.rootNode}></DirectoryTreeView>
+          <DirectoryContentView dirNode={curNode} indexPath={this.state.curDir}></DirectoryContentView>
+        </SplitPane>
+      </ExplorerContext.Provider>
     );
-  } 
+  }
 }
 
 export default RemoteExplorer;
+export { ExplorerContext };
