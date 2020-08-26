@@ -99,7 +99,7 @@ class DirectoryNavigation extends React.PureComponent {
       </Link>
     ].concat(this.props.indexName.map((name, idx) => {
       if(idx === this.props.indexName.length - 1) {
-        return <Typography color='textPrimary'> {name} </Typography>;
+        return <Typography key={idx} color='textPrimary'> {name} </Typography>;
       }else{
         return <Link key={idx} color='inherit' href='#' onClick={()=>{
           const clickedPath = this.props.indexPath.slice(0, idx+1);
