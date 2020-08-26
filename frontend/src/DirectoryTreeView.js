@@ -37,7 +37,7 @@ class DirectoryTreeItem extends React.Component {
     };
     console.log(`re-render: ${this.props.indexPath}`)
     return (
-      <TreeItem nodeId={this.props.indexPath.join()} label={this.props.dirNode.name} onLabelClick={onLabelClick}>
+      <TreeItem nodeId={this.props.indexPath.join('/')} label={this.props.dirNode.name} onLabelClick={onLabelClick}>
         {childDirs.map((child, index) => {
           return <DirectoryTreeItem key={child.name} dirNode={child} indexPath={this.props.indexPath.concat([index])}
             ></DirectoryTreeItem>

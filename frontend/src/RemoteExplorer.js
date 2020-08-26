@@ -15,12 +15,20 @@ class RemoteExplorer extends React.Component {
       rootNode: {
         name: '/'
       },
-      curDir: null,
+      curDir: [],
     };
 
     this.updateDir = this.updateDir.bind(this);
     this.setCurDir = this.setCurDir.bind(this);
     this.updatedFlagCache = {};
+    this.contextApi = {
+      updateDir: this.updateDir,
+      setCurDir: this.setCurDir,
+    };
+  }
+
+  componentDidMount() {
+    this.updateDir([]);
   }
 
   getNodePathFromIndexPath(indexPath){
@@ -96,24 +104,17 @@ class RemoteExplorer extends React.Component {
   }
 
   setCurDir(curPath) {
-    const selected = this.getNodeFromIndexPath(curPath);
     console.log('curPath:' + curPath);
     this.setState({curDir: curPath});
   }
 
   render() {
-    const contextAPI = {
-      updateDir: this.updateDir,
-      setCurDir: this.setCurDir,
-    };
-
-    const curNode = this.state.curDir ? this.getNodeFromIndexPath(this.state.curDir) : null;
 
     return (
-      <ExplorerContext.Provider value={contextAPI}>
+      <ExplorerContext.Provider value={this.contextApi}>
         <SplitPane split="vertical" defaultSize={200} minSize={100} maxSize={500}>
           <DirectoryTreeView rootNode={this.state.rootNode}></DirectoryTreeView>
-          <DirectoryContentView dirNode={curNode} indexPath={this.state.curDir}></DirectoryContentView>
+          <DirectoryContentView rootNode={this.state.rootNode} indexPath={this.state.curDir}></DirectoryContentView>
         </SplitPane>
       </ExplorerContext.Provider>
     );
