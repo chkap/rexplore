@@ -1,17 +1,22 @@
 
 import React, { useState } from 'react';
+import path from 'path'
+
 import Box from '@material-ui/core/Box'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Link from '@material-ui/core/Link'
-
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import HomeIcon from '@material-ui/icons/Home';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Typography from '@material-ui/core/Typography';
+
+import Lightbox from 'react-image-lightbox';
+import 'react-image-lightbox/style.css';
 
 import ExplorerContext from './context'
-import { Typography } from '@material-ui/core';
+import util from './util'
 
 class DirectoryContentView extends React.Component {
   static contextType = ExplorerContext;
@@ -19,12 +24,26 @@ class DirectoryContentView extends React.Component {
   constructor(props) {
     super(props);
     this.onClickDirItem = this.onClickDirItem.bind(this);
+    this.state = {
+      curSelectedImgIndex: null,
+    }
   }
 
   onClickDirItem(dirIndex) {
     const clickedIndexPath = [...this.props.indexPath, dirIndex];
     this.context.updateDir(clickedIndexPath);
     this.context.setCurDir(clickedIndexPath);
+  }
+
+  onClickFileItem(fileIndex) {
+    const imgPathArray = this.getImagePathArray();
+    const curImageName = this.getCurDirNode().files[fileIndex];
+    const selected = imgPathArray.indexOf(curImageName);
+    if(selected !== -1){
+      this.setState({curSelectedImgIndex: selected});
+      console.log('Launch lightbox')
+    }
+    console.log('File clicked')
   }
 
   getCurDirNode() {
@@ -45,6 +64,50 @@ class DirectoryContentView extends React.Component {
     return segments;
   }
 
+  getImagePathArray() {
+    const pathArray = [];
+    for(let fileName of this.getCurDirNode().files || []) {
+      if(util.isImageByName(fileName)){
+        pathArray.push(fileName);
+      }
+    }
+    console.log(`Imgs: ${pathArray.length}`);
+    
+    return pathArray;
+  }
+
+  renderLightbox() {
+    const imgPathArray = this.getImagePathArray();
+
+    const getImageURL = (index) =>{
+      let indexMod = index % imgPathArray.length;
+      const pathSegments = [...this.getIndexName(), imgPathArray[indexMod]];
+      const URLPath = '/files/' + pathSegments.map(encodeURIComponent).join('/');
+      console.log(`Img: ${URLPath}`);
+      return URLPath;
+    }
+
+    return (this.state.curSelectedImgIndex !== null && (
+      <Lightbox
+        imageTitle={`${this.state.curSelectedImgIndex}/${imgPathArray.length}: ${imgPathArray[this.state.curSelectedImgIndex]}`}
+        mainSrc={getImageURL(this.state.curSelectedImgIndex)}
+        nextSrc={getImageURL(this.state.curSelectedImgIndex + 1)}
+        prevSrc={getImageURL(this.state.curSelectedImgIndex - 1)}
+        onCloseRequest={() => this.setState({ curSelectedImgIndex: null })}
+        onMovePrevRequest={() =>
+          this.setState({
+            curSelectedImgIndex: (this.state.curSelectedImgIndex + imgPathArray.length - 1) % imgPathArray.length,
+          })
+        }
+        onMoveNextRequest={() =>
+          this.setState({
+            curSelectedImgIndex: (this.state.curSelectedImgIndex + 1) % imgPathArray.length,
+          })
+        }
+      />
+    ));
+  }
+
   render() {
     if(this.props.indexPath === null) {
       return <div>Select a directory first</div>
@@ -57,8 +120,8 @@ class DirectoryContentView extends React.Component {
           return <ListItem button key={childNode.name} onClick={()=> this.onClickDirItem(idx)}>
             <ListItemText primary={childNode.name} secondary="dir" />
           </ListItem>
-        }).concat(files.map(childFile => {
-          return <ListItem button key={childFile}> 
+        }).concat(files.map((childFile, idx) => {
+          return <ListItem button key={childFile} onClick={() => this.onClickFileItem(idx)}>
             <ListItemText primary={childFile} secondary="file" />
           </ListItem>
         }))
@@ -67,6 +130,7 @@ class DirectoryContentView extends React.Component {
         <List>
           {contents}
         </List>
+        {this.renderLightbox()}
       </div>)
     }
   }
