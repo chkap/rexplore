@@ -5,7 +5,7 @@
     "start": "npx nodemon main.js ."
   },
   "bin": {
-    "rexplorer": "./main.js"
+    "rexplore": "./main.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
