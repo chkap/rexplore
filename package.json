@@ -1,7 +1,6 @@
 {
-  "name": "rexplorer",
+  "name": "rexplore",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "start": "npx nodemon main.js ."
   },
