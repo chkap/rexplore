@@ -112,7 +112,7 @@ class RemoteExplorer extends React.Component {
 
     return (
       <ExplorerContext.Provider value={this.contextApi}>
-        <SplitPane split="vertical" defaultSize={200} minSize={100} maxSize={500}>
+        <SplitPane split="vertical" defaultSize={250} minSize={100} maxSize={500}>
           <DirectoryTreeView rootNode={this.state.rootNode}></DirectoryTreeView>
           <DirectoryContentView rootNode={this.state.rootNode} indexPath={this.state.curDir}></DirectoryContentView>
         </SplitPane>

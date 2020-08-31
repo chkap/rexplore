@@ -1,6 +1,5 @@
 
-import React, { useState } from 'react';
-import path from 'path'
+import React from 'react';
 
 import Box from '@material-ui/core/Box'
 import List from '@material-ui/core/List';
@@ -11,12 +10,17 @@ import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import HomeIcon from '@material-ui/icons/Home';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Typography from '@material-ui/core/Typography';
+import FolderIcon from '@material-ui/icons/Folder';
+import ImageIcon from '@material-ui/icons/Image';
+import ImageAspectRatioIcon from '@material-ui/icons/ImageAspectRatio';
 
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
 
 import ExplorerContext from './context'
 import util from './util'
+import { ListItemIcon } from '@material-ui/core';
+
 
 class DirectoryContentView extends React.Component {
   static contextType = ExplorerContext;
@@ -41,9 +45,9 @@ class DirectoryContentView extends React.Component {
     const selected = imgPathArray.indexOf(curImageName);
     if(selected !== -1){
       this.setState({curSelectedImgIndex: selected});
-      console.log('Launch lightbox')
+      console.log(`Launch lightbox ${fileIndex}`);
     }
-    console.log('File clicked')
+    console.log('File clicked');
   }
 
   getCurDirNode() {
@@ -76,20 +80,26 @@ class DirectoryContentView extends React.Component {
     return pathArray;
   }
 
+  getFileURL(indexName, fileName) {
+    const pathSegments = [...indexName, fileName];
+    const URLPath = '/files/' + pathSegments.map(encodeURIComponent).join('/');
+    return URLPath;
+  }
+
   renderLightbox() {
     const imgPathArray = this.getImagePathArray();
+    const indexName = this.getIndexName();
 
     const getImageURL = (index) =>{
-      let indexMod = index % imgPathArray.length;
-      const pathSegments = [...this.getIndexName(), imgPathArray[indexMod]];
-      const URLPath = '/files/' + pathSegments.map(encodeURIComponent).join('/');
-      console.log(`Img: ${URLPath}`);
-      return URLPath;
+      let indexMod = (index + imgPathArray.length) % imgPathArray.length;
+      const imgURL = this.getFileURL(indexName, imgPathArray[indexMod]);
+      console.log(`Img url: ${imgURL}`);
+      return imgURL;
     }
 
     return (this.state.curSelectedImgIndex !== null && (
       <Lightbox
-        imageTitle={`${this.state.curSelectedImgIndex}/${imgPathArray.length}: ${imgPathArray[this.state.curSelectedImgIndex]}`}
+        imageTitle={`${this.state.curSelectedImgIndex + 1}/${imgPathArray.length}: ${imgPathArray[this.state.curSelectedImgIndex]}`}
         mainSrc={getImageURL(this.state.curSelectedImgIndex)}
         nextSrc={getImageURL(this.state.curSelectedImgIndex + 1)}
         prevSrc={getImageURL(this.state.curSelectedImgIndex - 1)}
@@ -117,13 +127,20 @@ class DirectoryContentView extends React.Component {
       const dirs = curNode.dirs || [];
       const files = curNode.files || [];
       const contents = dirs.map( (childNode, idx) => {
-          return <ListItem button key={childNode.name} onClick={()=> this.onClickDirItem(idx)}>
-            <ListItemText primary={childNode.name} secondary="dir" />
+          return (
+          <ListItem button key={childNode.name} onClick={()=> this.onClickDirItem(idx)}>
+            <ListItemIcon><FolderIcon /></ListItemIcon>
+            <ListItemText primary={childNode.name} />
           </ListItem>
+          )
         }).concat(files.map((childFile, idx) => {
-          return <ListItem button key={childFile} onClick={() => this.onClickFileItem(idx)}>
-            <ListItemText primary={childFile} secondary="file" />
+          const FileIcon = util.isImageByName(childFile) ? ImageIcon : ImageAspectRatioIcon;
+          return (
+          <ListItem button key={childFile} onClick={() => this.onClickFileItem(idx)}>
+            <ListItemIcon ><FileIcon /></ListItemIcon>
+            <ListItemText primary={childFile} />
           </ListItem>
+          )
         }))
       return (<div>
         <DirectoryNavigation indexPath={this.props.indexPath} indexName={indexName}></DirectoryNavigation>
@@ -134,7 +151,6 @@ class DirectoryContentView extends React.Component {
       </div>)
     }
   }
-
 }
 
 class DirectoryNavigation extends React.PureComponent {

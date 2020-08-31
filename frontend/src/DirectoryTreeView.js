@@ -12,10 +12,6 @@ class DirectoryTreeItem extends React.Component {
 
   static contextType = ExplorerContext;
 
-  constructor(props){
-    super(props);
-  }
-
   shouldComponentUpdate(nextProps) {
     if(this.props.dirNode !== nextProps.dirNode){
       return true;
@@ -48,9 +44,6 @@ class DirectoryTreeItem extends React.Component {
 }
 
 class DirectoryTreeView extends React.PureComponent {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     const rootNode = this.props.rootNode;
