@@ -71,7 +71,7 @@ class RemoteExplorer extends React.Component {
     }
     const newDirs = Object.values(newDirDict);
     newDirs.sort((a, b) => a.name < b.name);
-    console.log(`newDirs: ${newDirs}`);
+    console.debug(`newDirs: ${newDirs}`);
     dirNode.dirs = newDirs;
     dirNode.files = files;
   }
@@ -82,11 +82,11 @@ class RemoteExplorer extends React.Component {
       return;
     }
     const url = '/api/dir?' + new URLSearchParams({path:nodePath}).toString();
-    console.log(`update dir with :${url}`);
+    console.debug(`update dir with :${url}`);
     fetch(url)
     .then(res => {
       if(res.ok){
-        console.log('fetch ok');
+        console.debug('fetch ok');
         return res.json();
       }else{
         throw Error('Failed to get dir content!');
@@ -104,7 +104,7 @@ class RemoteExplorer extends React.Component {
   }
 
   setCurDir(curPath) {
-    console.log('curPath:' + curPath);
+    console.debug('curPath:' + curPath);
     this.setState({curDir: curPath});
   }
 

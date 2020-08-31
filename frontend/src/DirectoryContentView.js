@@ -45,9 +45,9 @@ class DirectoryContentView extends React.Component {
     const selected = imgPathArray.indexOf(curImageName);
     if(selected !== -1){
       this.setState({curSelectedImgIndex: selected});
-      console.log(`Launch lightbox ${fileIndex}`);
+      console.debug(`Launch lightbox ${fileIndex}`);
     }
-    console.log('File clicked');
+    console.debug('File clicked');
   }
 
   getCurDirNode() {
@@ -75,7 +75,7 @@ class DirectoryContentView extends React.Component {
         pathArray.push(fileName);
       }
     }
-    console.log(`Imgs: ${pathArray.length}`);
+    console.debug(`Imgs: ${pathArray.length}`);
     
     return pathArray;
   }
@@ -93,7 +93,7 @@ class DirectoryContentView extends React.Component {
     const getImageURL = (index) =>{
       let indexMod = (index + imgPathArray.length) % imgPathArray.length;
       const imgURL = this.getFileURL(indexName, imgPathArray[indexMod]);
-      console.log(`Img url: ${imgURL}`);
+      console.debug(`Img url: ${imgURL}`);
       return imgURL;
     }
 

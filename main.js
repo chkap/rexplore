@@ -28,5 +28,9 @@ try {
 const app = require('./app.js');
 app.set('ROOT', root)
 app.use('/files', express.static(root));
+app.get('/', function(req, res) {
+    res.redirect('/static/index.html');
+});
+console.log(`Remote explorer will at http://localhost:${argv.port}`);
 app.listen(argv.port);
 

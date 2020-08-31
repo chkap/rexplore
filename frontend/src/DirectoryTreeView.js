@@ -31,7 +31,7 @@ class DirectoryTreeItem extends React.Component {
       this.context.updateDir(this.props.indexPath);
       this.context.setCurDir(this.props.indexPath);
     };
-    console.log(`re-render: ${this.props.indexPath}`)
+    console.debug(`re-render: ${this.props.indexPath}`)
     return (
       <TreeItem nodeId={this.props.indexPath.join('/')} label={this.props.dirNode.name} onLabelClick={onLabelClick}>
         {childDirs.map((child, index) => {
