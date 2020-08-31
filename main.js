@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 const express = require('express');
 const yargs = require('yargs');
 const path = require('path');
