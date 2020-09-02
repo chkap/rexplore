@@ -13,5 +13,8 @@
     "express": "~4.16.1",
     "morgan": "~1.9.1",
     "yargs": "^15.4.0"
-  }
+  },
+  "author": "chkap",
+  "homepage": "https://github.com/chkap/rexplore",
+  "license": "ISC"
 }
