@@ -76,9 +76,9 @@ class RemoteExplorer extends React.Component {
     dirNode.files = files;
   }
 
-  updateDir(indexPath) {
+  updateDir(indexPath, forceUpdate=false) {
     const nodePath = this.getNodePathFromIndexPath(indexPath);
-    if(this.updatedFlagCache[nodePath] === true) {
+    if(!forceUpdate && this.updatedFlagCache[nodePath] === true) {
       return;
     }
     const url = '/api/dir?' + new URLSearchParams({path:nodePath}).toString();

@@ -13,6 +13,8 @@ import Typography from '@material-ui/core/Typography';
 import FolderIcon from '@material-ui/icons/Folder';
 import ImageIcon from '@material-ui/icons/Image';
 import ImageAspectRatioIcon from '@material-ui/icons/ImageAspectRatio';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import Snackbar from '@material-ui/core/Snackbar';
 
 import Lightbox from 'react-image-lightbox';
 import 'react-image-lightbox/style.css';
@@ -159,14 +161,23 @@ class DirectoryNavigation extends React.PureComponent {
 
   constructor(props) {
     super(props);
+    this.state = {
+      openSnack: false,
+    };
 
     this.onClickUpward = this.onClickUpward.bind(this);
+    this.onClickRefresh = this.onClickRefresh.bind(this);
   }
 
   onClickUpward() {
     const parentPath = this.props.indexPath.slice(0, -1);
     this.context.setCurDir(parentPath);
     return false;
+  }
+
+  onClickRefresh() {
+    this.context.updateDir(this.props.indexPath, true);
+    this.setState({openSnack: true});
   }
 
   render() {
@@ -192,7 +203,10 @@ class DirectoryNavigation extends React.PureComponent {
       <Box display='flex' flexDirection='row'>
         <Box flexGrow={0} flexShrink={0}>
             <Link href='#' onClick={this.onClickUpward} >
-              <ArrowUpwardIcon color='primary'></ArrowUpwardIcon>
+              <ArrowUpwardIcon color='primary'/>
+            </Link>
+            <Link href='#' onClick={this.onClickRefresh}>
+              <RefreshIcon color='primary' />
             </Link>
         </Box>
         <Box flexGrow={1} flexShrink={1}>
@@ -200,6 +214,13 @@ class DirectoryNavigation extends React.PureComponent {
             {navItems}
           </Breadcrumbs>
         </Box>
+        <Snackbar
+          open={this.state.openSnack}
+          onClose={() => {this.setState({openSnack: false})}}
+          message='Refreshing'
+          autoHideDuration={1000}
+        >
+        </Snackbar>
       </Box>)
   }
 }
