@@ -13,7 +13,7 @@ class RemoteExplorer extends React.Component {
     super(props);
     this.state = {
       rootNode: {
-        name: '/'
+        name: 'ROOT'
       },
       curDir: [],
     };

@@ -49,6 +49,7 @@ class DirectoryTreeView extends React.PureComponent {
     const rootNode = this.props.rootNode;
     return (
       <TreeView
+        defaultExpanded={['']}
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}>
         <DirectoryTreeItem dirNode={rootNode} indexPath={[]}></DirectoryTreeItem>
