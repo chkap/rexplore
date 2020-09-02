@@ -94,6 +94,8 @@ class RemoteExplorer extends React.Component {
     })
     .then(data => {
       const [dirs, files] = data;
+      dirs.sort();
+      files.sort();
       this.updateDirWithIndex(indexPath, dirs, files)
       this.setState({
         rootNode: Object.assign({}, this.state.rootNode),
