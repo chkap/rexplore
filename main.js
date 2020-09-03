@@ -4,6 +4,7 @@ const express = require('express');
 const yargs = require('yargs');
 const path = require('path');
 const fs = require('fs');
+const compression = require('compression');
 
 const argv = yargs.option('p', {
             'alias': 'port',
@@ -29,6 +30,7 @@ try {
 const app = require('./app.js');
 app.set('ROOT', root)
 app.use('/files', express.static(root));
+app.use(compression());
 app.get('/', function(req, res) {
     res.redirect('/static/index.html');
 });

@@ -1,6 +1,6 @@
 {
   "name": "rexplore",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "scripts": {
     "start": "npx nodemon main.js ."
   },
@@ -8,6 +8,7 @@
     "rexplore": "./main.js"
   },
   "dependencies": {
+    "compression": "^1.7.4",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
